@@ -1,0 +1,26 @@
+{
+  "name": "dcm-selenium-common",
+  "version": "0.0.1",
+  "description": "Common bits of DCM functionality",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aurea-software/dcm-selenium-common.git"
+  },
+  "keywords": [
+    "dcm",
+    "selenium",
+    "common"
+  ],
+  "author": "Alexey Melnikov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aurea-software/dcm-selenium-common/issues"
+  },
+  "homepage": "https://github.com/aurea-software/dcm-selenium-common#readme",
+  "dependencies": {
+    "wd": "^0.4.0"
+  }
+}
