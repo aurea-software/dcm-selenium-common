@@ -35,7 +35,7 @@ module.exports = function (wd) {
 
     init(max);
 
-    return deferred;
+    return deferred.promise;
   };
 
   // loads DCM application
