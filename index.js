@@ -1,11 +1,13 @@
 // DCM extension for selenium wd.
+var Q = required('q');
 
 module.exports = function (wd) {
   var url;
 
   // inits browser
-  wd.PromiseChainWebdriver.prototype.dcmInit = function (options, done) {
+  wd.PromiseChainWebdriver.prototype.dcmInit = function (options) {
     var self = this;
+    var deferred = Q.defer();
 
     this.on('status', function(info) {
       console.log(info);
@@ -19,12 +21,11 @@ module.exports = function (wd) {
     function init(i) {
       self.init(options)
       .then(function() {
-        done();
+        deferred.resolve();
       })
       .catch(function (error) {
         if (i == 0) {
-          done("DCM: could not initialize browser, " + max + " attempts were made.");
-          //throw new Error("DCM: could not initialize browser, " + max + " attempts were made.");
+          return deferred.reject(new Error("DCM: could not initialize browser, " + max + " attempts were made."));
         }
 
         console.log('DCM: browser init error - ' + error.message + '. Trying again.');
@@ -33,6 +34,8 @@ module.exports = function (wd) {
     }
 
     init(max);
+
+    return deferred;
   };
 
   // loads DCM application

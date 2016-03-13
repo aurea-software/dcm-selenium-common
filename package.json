@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/aurea-software/dcm-selenium-common#readme",
   "dependencies": {
+    "q": "^1.4.1",
     "wd": "^0.4.0"
   }
 }
