@@ -21,6 +21,7 @@ module.exports = function (wd) {
     function init(i) {
       self.init(options)
       .then(function() {
+        console.log('DCM: browser initialized successfully!');
         deferred.resolve();
       })
       .catch(function (error) {
