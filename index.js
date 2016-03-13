@@ -1,5 +1,5 @@
 // DCM extension for selenium wd.
-var Q = required('q');
+var Q = require('q');
 
 module.exports = function (wd) {
   var url;
