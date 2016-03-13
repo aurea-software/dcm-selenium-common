@@ -4,8 +4,9 @@ module.exports = function (wd) {
   var url;
 
   // inits browser
-  wd.PromiseChainWebdriver.prototype.dcmInit = function (options) {
-    
+  wd.PromiseChainWebdriver.prototype.dcmInit = function (options, done) {
+    var self = this;
+
     this.on('status', function(info) {
       console.log(info);
     });
@@ -14,25 +15,24 @@ module.exports = function (wd) {
       console.log(' > ' + meth, path, data || '');
     });
 
-    // trying to init browser
-    var i, max = 10, promise;
-    for (i = max; i >= 0; i--) {
-      try {
-        promise = this.init(options);
-      } catch (e) {
-        console.log('DCM: browser init error - ' + e.message);
-        continue;
-      }
+    var max = 10;
+    function init(i) {
+      self.init(options)
+      .then(function() {
+        done();
+      })
+      .catch(function (error) {
+        if (i == 0) {
+          done("DCM: could not initialize browser, " + max + " attempts were made.");
+          //throw new Error("DCM: could not initialize browser, " + max + " attempts were made.");
+        }
 
-      console.log('DCM: browser successfully initialized.');
-      break;
+        console.log('DCM: browser init error - ' + error.message + '. Trying again.');
+        init(i - 1);
+      });
     }
 
-    if (i < 0) {
-      throw new Error("DCM: could not initialize browser, " + max + " attempts were made.");
-    }
-
-    return promise;
+    init(max);
   };
 
   // loads DCM application

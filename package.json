@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "Common bits of DCM functionality",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aurea-software/dcm-selenium-common.git"
