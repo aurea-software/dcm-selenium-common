@@ -56,10 +56,16 @@ module.exports = function (wd) {
       .elementByCss('form[name=LoginForm] button[type=submit]').click();
   };
 
+  // goes to the sidenav
+  wd.PromiseChainWebdriver.prototype.dcmTopnav = function() {
+    return this
+      .frame('navbar');
+  };
+
   // goes to the Party tab
   wd.PromiseChainWebdriver.prototype.dcmPartyTab = function() {
     return this
-      .frame('navbar')
+      .dcmTopnav()
       .elementById('Party').click();
   };
 
