@@ -19,19 +19,20 @@ module.exports = function (wd) {
 
     var max = 10;
     function init(i) {
-      self.init(options)
-      .then(function() {
-        console.log('DCM: browser initialized successfully!');
-        deferred.resolve();
-      })
-      .catch(function (error) {
-        if (i == 0) {
-          return deferred.reject(new Error("DCM: could not initialize browser, " + max + " attempts were made."));
-        }
+      Q.timeout(self.init(options), 5000)
+        .then(function() {
+          console.log('DCM: browser initialized successfully!');
+          deferred.resolve();
+        })
+        .catch(function (error) {
+          if (i == 0) {
+            return deferred.reject(new Error("DCM: could not initialize browser, " + max + " attempts were made."));
+          }
 
-        console.log('DCM: browser init error - ' + error.message + '. Trying again.');
-        init(i - 1);
-      });
+          console.log('DCM: browser init error - ' + error.message + '. Trying again.');
+          init(i - 1);
+        })
+        .done();
     }
 
     init(max);
