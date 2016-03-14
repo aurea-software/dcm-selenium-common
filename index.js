@@ -171,8 +171,15 @@ module.exports = function (wd) {
   };
 
   // selects login form
-  wd.PromiseChainWebdriver.prototype.dcmSelectLoginForm = function (childCss) {
+  wd.PromiseChainWebdriver.prototype.dcmSelectLoginBox = function (childCss) {
     var selector = childCss ? '.login-model ' + childCss : '.login-model';
+    return this
+      .elementByCss(selector);
+  };
+
+  // selects login form
+  wd.PromiseChainWebdriver.prototype.dcmSelectLoginForm = function (childCss) {
+    var selector = childCss ? 'form[name=LoginForm] ' + childCss : 'form[name=LoginForm]';
     return this
       .elementByCss(selector);
   };
