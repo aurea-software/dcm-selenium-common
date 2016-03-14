@@ -63,6 +63,13 @@ module.exports = function (wd) {
       .elementById('Party').click();
   };
 
+  // goes to the sidenav
+  wd.PromiseChainWebdriver.prototype.dcmSidebar = function() {
+    return this
+      .frame()
+      .frame('sidebar');
+  };
+
   // selects Party main frame
   wd.PromiseChainWebdriver.prototype.dcmPersonPartyPage = function () {
     return this
