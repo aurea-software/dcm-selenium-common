@@ -144,6 +144,12 @@ module.exports = function (wd) {
       .frame('subpage');
   };
 
+  wd.PromiseChainWebdriver.prototype.dcmSelectPersonPartySearch = function (childCss) {
+    var selector = childCss ? '.search-container ' + childCss : '.search-container';
+    return this
+      .elementByCss(selector);
+  };
+
   // searches for Party by Id
   wd.PromiseChainWebdriver.prototype.dcmSearchPersonPartyByTaxId = function (taxid) {
     return this
