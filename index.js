@@ -137,10 +137,29 @@ module.exports = function (wd) {
 
   // selects Party main frame
   wd.PromiseChainWebdriver.prototype.dcmPersonPartyPage = function () {
+    var self = this;
     return this
       .frame()
       .frame('container')
-      .frame('cacheframe0')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Party.PersonSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('subpage');
+  };
+
+  // selects Party main frame
+  wd.PromiseChainWebdriver.prototype.dcmAuditAdminPage = function () {
+    var self = this;
+    return this
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=AuditInfo.AuditPage"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
       .frame('subpage');
   };
 
@@ -149,6 +168,21 @@ module.exports = function (wd) {
     return this
       .elementByCss(selector);
   };
+
+  wd.PromiseChainWebdriver.prototype.dcmSelectSearch = wd.PromiseChainWebdriver.prototype.dcmSelectPersonPartySearch;
+
+  wd.PromiseChainWebdriver.prototype.dcmSelectPersonPartyAdvancedSearch = function (childCss) {
+    var selector = childCss ? '.search-container .advanced-form ' + childCss : '.search-container .advanced-form';
+    return this
+      .elementByCss(selector);
+  };
+
+  wd.PromiseChainWebdriver.prototype.dcmOpenPersonPartyAdvancedSearch = function (childCss) {
+    return this
+      .dcmSelectPersonPartySearch('.btn.advanced-link').click().sleep(500);
+  };
+
+  wd.PromiseChainWebdriver.prototype.dcmOpenAdvancedSearch = wd.PromiseChainWebdriver.prototype.dcmOpenPersonPartyAdvancedSearch;
 
   // searches for Party by Id
   wd.PromiseChainWebdriver.prototype.dcmSearchPersonPartyByTaxId = function (taxid) {
@@ -167,24 +201,34 @@ module.exports = function (wd) {
 
   // selects Party main frame
   wd.PromiseChainWebdriver.prototype.dcmNewPersonPartyPage = function () {
+    var self = this;
     return this
       .dcmPersonPartyPage()
       .elementById('Button_Person_Main_NewPerson').click()
       .frame()
       .frame('container')
-      .frame('cacheframe0')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Party.PersonSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
       .frame('proppage');
   };
 
   // selects Party main frame
   wd.PromiseChainWebdriver.prototype.dcmNewPersonPartyDelegatePage = function () {
+    var self = this;
     return this
       .dcmPersonPartyPage()
       .dcmPersonPartyComponentsPage()
       .elementById('Button_Person_Main_Delegation_Delegates_AddDelegate').click()
       .frame()
       .frame('container')
-      .frame('cacheframe0')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Party.PersonSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
       .frame('proppage');
   };
 
