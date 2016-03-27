@@ -123,19 +123,21 @@ module.exports = function (wd) {
       .frame('sidebar');
   };
 
-  // goes to the Product Search sub menu
-  wd.PromiseChainWebdriver.prototype.dcmProductSearchSubmenu = function() {
+  // goes to the Hier Product Search sub menu
+  wd.PromiseChainWebdriver.prototype.dcmProductHierSearchSubmenu = function() {
     return this
+      .dcmSidebar()
       .elementById('ProductHierarchySearch_sub').click();
   };
 
-  // goes to the Product Search sub menu
+  // goes to the Party Delegation sub menu
   wd.PromiseChainWebdriver.prototype.dcmPersonPartyDelegationSubmenu = function() {
     return this
+      .dcmSidebar()
       .elementById('Tab_Person_Main_Delegation_link').click();
   };
 
-  // selects Party main frame
+  // selects Person Party main frame
   wd.PromiseChainWebdriver.prototype.dcmPersonPartyPage = function () {
     var self = this;
     return this
@@ -148,6 +150,23 @@ module.exports = function (wd) {
       })
       .frame('subpage');
   };
+
+  // selects Org Party main frame
+  wd.PromiseChainWebdriver.prototype.dcmOrgPartyPage = function () {
+    var self = this;
+    return this
+      .dcmPersonPartyPage()
+      .dcmSelectSearch('button[data-toggle=dropdown]').click().sleep(150)
+      .dcmSelectSearch('button[data-toggle=dropdown] ~ .dropdown-menu li:nth-child(2) a').click().sleep(150)      
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Party.OrgSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('subpage');
+  };  
 
   // selects Party main frame
   wd.PromiseChainWebdriver.prototype.dcmAuditAdminPage = function () {
@@ -184,7 +203,15 @@ module.exports = function (wd) {
 
   wd.PromiseChainWebdriver.prototype.dcmOpenAdvancedSearch = wd.PromiseChainWebdriver.prototype.dcmOpenPersonPartyAdvancedSearch;
 
-  // searches for Party by Id
+  // searches for Org Party by Id
+  wd.PromiseChainWebdriver.prototype.dcmSearchOrgPartyByTaxId = function (taxid) {
+    return this
+      .elementByCss('form[name=Search_Org_Main_primaryForm] input[name=Field_Org_Main_TaxID_Search_Value]')
+      .type(taxid)
+      .elementByLinkText('Search').click();
+  };
+
+  // searches for Person Party by Id
   wd.PromiseChainWebdriver.prototype.dcmSearchPersonPartyByTaxId = function (taxid) {
     return this
       .elementByCss('form[name=Search_Person_Main_primaryForm] input[name=Field_Person_Main_TaxID_Search_Value]')
@@ -199,7 +226,7 @@ module.exports = function (wd) {
       .frame('component_iframe');
   };
 
-  // selects Party main frame
+  // opens New Person Party page and selects main property frame
   wd.PromiseChainWebdriver.prototype.dcmNewPersonPartyPage = function () {
     var self = this;
     return this
@@ -215,11 +242,27 @@ module.exports = function (wd) {
       .frame('proppage');
   };
 
-  // selects Party main frame
+  // opens New Org Party page and selects main property frame
+  wd.PromiseChainWebdriver.prototype.dcmNewOrgPartyPage = function () {
+    var self = this;
+    return this
+      .dcmOrgPartyPage()
+      .elementById('Button_Org_Main_NewOrg').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Party.OrgSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
+  };
+
+  // opens New Person Delegation page
   wd.PromiseChainWebdriver.prototype.dcmNewPersonPartyDelegatePage = function () {
     var self = this;
     return this
-      .dcmPersonPartyPage()
+      .dcmPersonPartyDelegationSubmenu()
       .dcmPersonPartyComponentsPage()
       .elementById('Button_Person_Main_Delegation_Delegates_AddDelegate').click()
       .frame()
@@ -232,15 +275,95 @@ module.exports = function (wd) {
       .frame('proppage');
   };
 
-//Button_Person_Main_Delegation_Delegates_AddDelegate
-
-  // selects Hierarchy main frame
+  // selects Party Hierarchy main frame
   wd.PromiseChainWebdriver.prototype.dcmPartyHierarchyPage = function () {
+    var self = this;
     return this
       .frame()
       .frame('container')
-      .frame('cacheframe1')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=HierarchySearch.HierarchySearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
       .frame('subpage');
+  };
+
+  // selects Product Hierarchy main frame
+  wd.PromiseChainWebdriver.prototype.dcmProductHierarchyPage = function () {
+    var self = this;
+    return this
+      .dcmProductHierSearchSubmenu()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=ProductHierarchySearch.ProductHierarchySearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('subpage');
+  };
+
+  // opens New Product Hierarchy Page
+  wd.PromiseChainWebdriver.prototype.dcmNewProductHierarchyPage = function () {
+    var self = this;
+    return this
+      .dcmProductHierarchyPage()
+      .elementById('Button_ProductHierarchySearch_ProductHierarchy_NewProductHierarchy').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=ProductHierarchySearch.ProductHierarchySearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
+  };
+
+  // searches for Product Hierarchy by Name
+  wd.PromiseChainWebdriver.prototype.dcmSearchProductHierarchyByName = function (name) {
+    return this
+      .elementByCss('form[name=Search_ProductHierarchySearch_Main_primaryForm] input[name=Field_ProductHierarchySearch_Main_Name_Search_Value]')
+      .type(name)
+      .elementByLinkText('Search').click();
+  };
+
+  // selects Contract Kit Compensation main frame
+  wd.PromiseChainWebdriver.prototype.dcmContractKitPage = function () {
+    var self = this;
+    return this
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Contracts.ContractsSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('subpage');
+  };
+
+  // searches for Contract Kit by Name
+  wd.PromiseChainWebdriver.prototype.dcmSearchContractKitByName = function (name) {
+    return this
+      .elementByCss('form[name=Search_Contracts_Main_primaryForm] input[name=Field_Contracts_Main_Name_Search_Value]')
+      .type(name)
+      .elementByLinkText('Search').click();
+  };
+
+  // opens New Contract Kit page and selects main property frame
+  wd.PromiseChainWebdriver.prototype.dcmNewContractKitPage = function () {
+    var self = this;
+    return this
+      .dcmContractKitPage()
+      .elementById('Button_Contracts_Main_NewContractKit').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Contracts.ContractsSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
   };
 
   // selects any button
@@ -419,6 +542,182 @@ module.exports = function (wd) {
     if (params.zipCode) {
       promise = promise
         .elementByCss('input[name=ZipCode]').type(params.zipCode);
+    }
+
+    return promise
+      .elementByCss('a#save').click();
+  };
+
+  // creates person party
+  wd.PromiseChainWebdriver.prototype.dcmCreateOrgParty = function (options) {
+    var params = {
+      "name": options.name,
+      "taxId": options.taxId,
+      "syncWithPdb": options.syncWithPdb,
+      "roles": options.roles,
+      "street": options.street,
+      "city": options.city,
+      "zipCode": options.zipCode
+    };
+
+    var promise = this
+      .dcmPartyTab()
+      .dcmNewOrgPartyPage();
+
+    if (params.name) {
+      promise = promise
+        .elementByCss('input[name="Party.Name"]').type(params.name);
+    }
+    if (params.taxId) {
+      promise = promise
+        .elementByCss('input[name="Party.TaxID"]').type(params.taxId); 
+    }    
+    if (params.syncWithPdb === true) {
+      promise = promise
+        .elementByCss('button[data-id=SyncPDB]').click().sleep(150)
+        .elementByCss('button[data-id=SyncPDB] ~ .dropdown-menu li:nth-child(2) a').click();
+    } else {
+      promise = promise
+        .elementByCss('button[data-id=SyncPDB]').click().sleep(150)
+        .elementByCss('button[data-id=SyncPDB] ~ .dropdown-menu li:nth-child(1) a').click();
+    }
+
+    if (params.roles) {
+      // scroll to the roles
+      promise = promise
+        .execute('scrollTo(0,200)');
+
+      var i;
+      for (i = 0; i < params.roles.length; ++i) {
+        var role = params.roles[i];
+        if (role === 'appointingCompany') {
+          promise = promise
+            .elementByCss('input[name=RoleAPPOINTINGCOMPANY] ~ i').click();
+        } else if (role === 'contractKitProvider') {
+          promise = promise
+            .elementByCss('input[name=RoleFINANCIAL_SERVICES] ~ i').click();
+        } else if (role === 'employer') {
+          promise = promise
+            .elementByCss('input[name=RoleEMPLOYER] ~ i').click();
+        } else if (role === 'employee') {
+          promise = promise
+            .elementByCss('input[name=RoleEMPLOYEE] ~ i').click();
+        } else if (role === 'distributor') {
+          promise = promise
+            .elementByCss('input[name=RoleDISTRIBUTOR] ~ i').click();
+        }
+      }
+    }
+    if (params.street) {
+      promise = promise
+        .elementByCss('input[name="ContactPoint.Address.Street1"]').type(params.street); 
+    }
+    if (params.city) {
+      promise = promise
+        .elementByCss('input[name="ContactPoint.Address.City"]').type(params.city);
+    }
+    if (params.zipCode) {
+      promise = promise
+        .elementByCss('input[name=ZipCode]').type(params.zipCode);
+    }
+
+    return promise
+      .elementByCss('a#save').click();
+  };
+
+  // creates person party
+  wd.PromiseChainWebdriver.prototype.dcmCreateProductHierarchy = function (options) {
+    var params = {
+      "name": options.name,
+      "description": options.description
+    };
+
+    var promise = this
+      .dcmHierarchyTab()
+      .dcmNewProductHierarchyPage();
+
+    if (params.name) {
+      promise = promise
+        .elementByCss('input[name="Name"]').type(params.name);
+    }
+    if (params.description) {
+      promise = promise
+        .elementByCss('input[name="Description"]').type(params.description); 
+    }
+
+    return promise
+      .elementByCss('a#save').click();
+  };
+
+  // creates person party
+  wd.PromiseChainWebdriver.prototype.dcmCreateContractKit = function (options) {
+    var self = this;
+    var params = {
+      "name": options.name,
+      "description": options.description,
+      "contractKitProvider": options.contractKitProvider,
+      "productHierarchy": options.productHierarchy
+    };
+
+    var promise = this
+      .dcmCompensationTab()
+      .dcmNewContractKitPage();
+
+    if (params.name) {
+      promise = promise
+        .elementByCss('input[name="Name"]').type(params.name);
+    }
+    if (params.description) {
+      promise = promise
+        .elementByCss('input[name="Description"]').type(params.description); 
+    }
+    if (params.productHierarchy) {
+      promise = promise
+        .elementByCss('button[data-id=Products]').click().sleep(150)
+        .elementsByCss('button[data-id=Products] ~ .dropdown-menu li a span.text')
+        .then(function (elements) {
+          var i;
+          var deferred = Q.defer(promise);
+          for (i = 0; i < elements.length; ++i) {
+            (function (idx) {
+              elements[idx].text().then(function (text) {
+                if (text == params.productHierarchy) {
+                  console.log('Product hier index: ' + idx);
+                  self
+                    .elementByCss('button[data-id=Products] ~ .dropdown-menu li:nth-child(' + (idx + 1) + ') a')
+                    .click().then(function () {
+                      deferred.resolve();
+                    });
+                }
+              });
+            })(i);
+          }
+          return deferred.promise;
+        });
+    }
+    if (params.contractKitProvider) {
+      promise = promise
+        .elementByCss('button[data-id=Party]').click().sleep(150)
+        .elementsByCss('button[data-id=Party] ~ .dropdown-menu li a span.text')
+        .then(function (elements) {
+          var i;
+          var deferred = Q.defer(promise);
+          for (i = 0; i < elements.length; ++i) {
+            (function (idx) {
+              elements[idx].text().then(function (text) {
+                if (text.indexOf(params.contractKitProvider) >= 0) {
+                  console.log('Contract kit provider index: ' + idx);
+                  self
+                    .elementByCss('button[data-id=Party] ~ .dropdown-menu li:nth-child(' + (idx + 1) + ') a')
+                    .click().then(function () {
+                      deferred.resolve();
+                    });
+                }
+              });
+            })(i);
+          }
+          return deferred.promise;
+        });
     }
 
     return promise
