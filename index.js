@@ -123,11 +123,32 @@ module.exports = function (wd) {
       .frame('sidebar');
   };
 
-  // goes to the Hier Product Search sub menu
+  // goes to the Hier - Product Search sub menu
   wd.PromiseChainWebdriver.prototype.dcmProductHierSearchSubmenu = function() {
     return this
       .dcmSidebar()
       .elementById('ProductHierarchySearch_sub').click();
+  };
+
+  // goes to the Hier - Comp Hier Search sub menu
+  wd.PromiseChainWebdriver.prototype.dcmCompHierSearchSubmenu = function() {
+    return this
+      .dcmSidebar()
+      .elementById('AgrHierarchySearch_sub').click();
+  };
+
+  // goes to the Hier - Comp Hier Search - Tree View sub menu
+  wd.PromiseChainWebdriver.prototype.dcmCompHierTreeViewSubmenu = function() {
+    return this
+      .dcmSidebar()
+      .elementById('Tab_AgrHierarchySearch_Tree_Main_link').click();
+  };
+
+  // goes to the Hier - Comp Hier Search - Root Positions sub menu
+  wd.PromiseChainWebdriver.prototype.dcmCompHierRootPositionsSubmenu = function() {
+    return this
+      .dcmSidebar()
+      .elementById('Tab_AgrHierarchySearch_RootPosition_Main_link').click();
   };
 
   // goes to the Party Delegation sub menu
@@ -304,6 +325,44 @@ module.exports = function (wd) {
       .frame('subpage');
   };
 
+  // selects Comp Hier main frame
+  wd.PromiseChainWebdriver.prototype.dcmCompHierarchyPage = function () {
+    var self = this;
+    return this
+      .dcmCompHierSearchSubmenu()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=AgrHierarchySearch.HierarchySearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('subpage');
+  };
+
+  // selects Comp Hierarchy components frame
+  wd.PromiseChainWebdriver.prototype.dcmCompHierarchyComponentsPage = function () {
+    return this
+      .dcmCompHierarchyPage()
+      .frame('component_iframe');
+  };
+
+  // selects Comp Hier Tree View main frame
+  wd.PromiseChainWebdriver.prototype.dcmCompHierarchyTreeViewPage = function () {
+    var self = this;
+    return this
+      .dcmCompHierTreeViewSubmenu()
+      .dcmCompHierarchyComponentsPage();
+  };
+
+  // selects Comp Hier Root Positions main frame
+  wd.PromiseChainWebdriver.prototype.dcmCompHierarchyRootPositionsPage = function () {
+    var self = this;
+    return this
+      .dcmCompHierRootPositionsSubmenu()
+      .dcmCompHierarchyComponentsPage();
+  };
+
   // opens New Product Hierarchy Page
   wd.PromiseChainWebdriver.prototype.dcmNewProductHierarchyPage = function () {
     var self = this;
@@ -320,10 +379,66 @@ module.exports = function (wd) {
       .frame('proppage');
   };
 
+  // opens New Comp Hierarchy Page
+  wd.PromiseChainWebdriver.prototype.dcmNewCompHierarchyPage = function () {
+    var self = this;
+    return this
+      .dcmCompHierarchyPage()
+      .elementById('Button_HierarchySearch_NewAgrHierarchy').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=AgrHierarchySearch.HierarchySearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
+  };
+
+  // opens New Comp Hierarchy Page
+  wd.PromiseChainWebdriver.prototype.dcmNewCompHierarchyRootPositionPage = function () {
+    var self = this;
+    return this
+      .dcmCompHierarchyRootPositionsPage()
+      .elementById('Button_AddAgrHierRootPosition').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=AgrHierarchySearch.HierarchySearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
+  };
+
+  // opens View in Comp Hierarchy Page
+  wd.PromiseChainWebdriver.prototype.dcmViewInCompHierarchyPage = function () {
+    var self = this;
+    return this
+      .dcmCompHierarchyTreeViewPage()
+      .elementById('Button_AgrHierarchySearchTree_ViewInHierarchy').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src^="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=AgrHierarchyDisplay.HierarchyOverview&transferfields=true&Field_Hierarchy_PositionGID"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('subpage');
+  };
+
   // searches for Product Hierarchy by Name
   wd.PromiseChainWebdriver.prototype.dcmSearchProductHierarchyByName = function (name) {
     return this
       .elementByCss('form[name=Search_ProductHierarchySearch_Main_primaryForm] input[name=Field_ProductHierarchySearch_Main_Name_Search_Value]')
+      .type(name)
+      .elementByLinkText('Search').click();
+  };  
+
+  // searches for Comp Hierarchy by Name  
+  wd.PromiseChainWebdriver.prototype.dcmSearchCompHierarchyByName = function (name) {
+    return this
+      .elementByCss('form[name=Search_AgrHierarchySearch_Main_primaryForm] input[name=Field_Hierarchy_Name_Search_Value]')
       .type(name)
       .elementByLinkText('Search').click();
   };
@@ -364,6 +479,22 @@ module.exports = function (wd) {
         return self.frame(id);
       })
       .frame('proppage');
+  };
+
+  // checks in Contract Kit
+  wd.PromiseChainWebdriver.prototype.dcmCheckinContractKit = function () {
+    var self = this;
+    return this
+      .elementById('Button_Contracts_Main_ContractKitCheckIn').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Contracts.ContractsSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage')
+      .elementByCss('a#save').click();
   };
 
   // selects any button
@@ -625,7 +756,7 @@ module.exports = function (wd) {
       .elementByCss('a#save').click();
   };
 
-  // creates person party
+  // creates product hierarchy
   wd.PromiseChainWebdriver.prototype.dcmCreateProductHierarchy = function (options) {
     var params = {
       "name": options.name,
@@ -635,6 +766,77 @@ module.exports = function (wd) {
     var promise = this
       .dcmHierarchyTab()
       .dcmNewProductHierarchyPage();
+
+    if (params.name) {
+      promise = promise
+        .elementByCss('input[name="Name"]').type(params.name);
+    }
+    if (params.description) {
+      promise = promise
+        .elementByCss('input[name="Description"]').type(params.description); 
+    }
+
+    return promise
+      .elementByCss('a#save').click();
+  };
+
+  // creates comp hierarchy
+  wd.PromiseChainWebdriver.prototype.dcmCreateCompHierarchy = function (options) {
+    var self = this;
+    var params = {
+      "name": options.name,
+      "description": options.description,
+      "contractKitName": options.contractKitName
+    };
+
+    var promise = this
+      .dcmHierarchyTab()
+      .dcmNewCompHierarchyPage();
+
+    if (params.name) {
+      promise = promise
+        .elementByCss('input[name="Name"]').type(params.name);
+    }
+    if (params.description) {
+      promise = promise
+        .elementByCss('input[name="Description"]').type(params.description); 
+    }
+
+    if (options.contractKitName) {
+      promise = promise
+        .elementByCss('#searchContractKitSearchPage_search_div').click()
+        .execute('scrollTo(0,200)')
+        .sleep(200)
+        .frame('ContractKitSearchPage_search_div_frame')
+        .elementByCss('input[name=Field_ContractKit_Name_Search_Value]').type(options.contractKitName)
+        .elementByLinkText('Search').click()
+        .sleep(3000)
+        .execute('scrollTo(0,200)')
+        .elementByCss('table#Grid_ContractKit tbody tr td:nth-child(1)').click()
+        .elementByCss('a#Button_ContractKitSearch_PP_Select').click()
+        .frame()
+        .frame('container')
+        .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=AgrHierarchySearch.HierarchySearch"]')
+        .getAttribute('id').then(function (id) {
+          console.log('Frame Id: ' + id);
+          return self.frame(id);
+        })
+        .frame('proppage')
+    }
+
+    return promise
+      .elementByCss('a#save').click();
+  };
+
+  // creates comp hierarchy root position (comp hierarchy should be selected)
+  wd.PromiseChainWebdriver.prototype.dcmCreateCompHierarchyRootPosition = function (options) {
+    var params = {
+      "name": options.name,
+      "description": options.description
+    };
+
+    var promise = this
+      .dcmNewCompHierarchyRootPositionPage();
 
     if (params.name) {
       promise = promise
