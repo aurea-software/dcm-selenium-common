@@ -805,6 +805,7 @@ module.exports = function (wd) {
     if (options.contractKitName) {
       promise = promise
         .elementByCss('#searchContractKitSearchPage_search_div').click()
+        .sleep(5000)
         .execute('scrollTo(0,200)')
         .sleep(200)
         .frame('ContractKitSearchPage_search_div_frame')
