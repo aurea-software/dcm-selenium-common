@@ -805,14 +805,11 @@ module.exports = function (wd) {
     if (options.contractKitName) {
       promise = promise
         .elementByCss('#searchContractKitSearchPage_search_div').click()
-        .sleep(5000)
-        .execute('scrollTo(0,200)')
-        .sleep(200)
+        .sleep(1000)
         .frame('ContractKitSearchPage_search_div_frame')
         .elementByCss('input[name=Field_ContractKit_Name_Search_Value]').type(options.contractKitName)
+        .execute('scrollTo(0,400)')
         .elementByLinkText('Search').click()
-        .sleep(3000)
-        .execute('scrollTo(0,200)')
         .elementByCss('table#Grid_ContractKit tbody tr td:nth-child(1)').click()
         .elementByCss('a#Button_ContractKitSearch_PP_Select').click()
         .frame()
