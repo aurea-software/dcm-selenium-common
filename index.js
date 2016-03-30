@@ -363,22 +363,6 @@ module.exports = function (wd) {
       .dcmCompHierarchyComponentsPage();
   };
 
-  // opens New Product Hierarchy Page
-  wd.PromiseChainWebdriver.prototype.dcmNewProductHierarchyPage = function () {
-    var self = this;
-    return this
-      .dcmProductHierarchyPage()
-      .elementById('Button_ProductHierarchySearch_ProductHierarchy_NewProductHierarchy').click()
-      .frame()
-      .frame('container')
-      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=ProductHierarchySearch.ProductHierarchySearch"]')
-      .getAttribute('id').then(function (id) {
-        console.log('Frame Id: ' + id);
-        return self.frame(id);
-      })
-      .frame('proppage');
-  };
-
   // opens New Comp Hierarchy Page
   wd.PromiseChainWebdriver.prototype.dcmNewCompHierarchyPage = function () {
     var self = this;
@@ -388,6 +372,22 @@ module.exports = function (wd) {
       .frame()
       .frame('container')
       .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=AgrHierarchySearch.HierarchySearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
+  };
+
+  // opens New Product Hierarchy Page
+  wd.PromiseChainWebdriver.prototype.dcmNewProductHierarchyPage = function () {
+    var self = this;
+    return this
+      .dcmProductHierarchyPage()
+      .elementById('Button_ProductHierarchySearch_ProductHierarchy_NewProductHierarchy').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=ProductHierarchySearch.ProductHierarchySearch"]')
       .getAttribute('id').then(function (id) {
         console.log('Frame Id: ' + id);
         return self.frame(id);
@@ -497,98 +497,80 @@ module.exports = function (wd) {
       .elementByCss('a#save').click();
   };
 
-  // selects any button
-  wd.PromiseChainWebdriver.prototype.dcmSelectButton = function (containerCss) {
-    var selector = containerCss ? containerCss + ' .btn' : '.btn';
+  // selects Contract Kit components frame
+  wd.PromiseChainWebdriver.prototype.dcmContractKitComponentsPage = function () {
     return this
-      .elementByCss(selector);
+      .dcmContractKitPage()
+      .frame('component_iframe');
   };
 
-  // selects disabled button
-  wd.PromiseChainWebdriver.prototype.dcmSelectDisabledButton = function () {
+  // goes to the Contract Kits sub menu
+  wd.PromiseChainWebdriver.prototype.dcmContractKitsSubmenu = function() {
     return this
-      .elementByCss('.btn.pass');
+      .dcmSidebar()
+      .elementById('Contracts_sub').click();
   };
 
-  // selects green button
-  wd.PromiseChainWebdriver.prototype.dcmSelectGreenButton = function () {
+  // goes to the CK - Quotas sub menu
+  wd.PromiseChainWebdriver.prototype.dcmContractKitsQuotasSubmenu = function() {
     return this
-      .elementByCss('.btn.btn-green:not(.pass)');
+      .dcmSidebar()
+      .elementById('Tab_Contracts_Main_Quotas_link').click();
   };
 
-  // selects grey button
-  wd.PromiseChainWebdriver.prototype.dcmSelectGreyButton = function () {
+  // goes to the CK - Quotas - Measures sub menu
+  wd.PromiseChainWebdriver.prototype.dcmContractKitsQuotasMeasuresSubmenu = function() {
     return this
-      .elementByCss('.btn.btn-grey:not(.pass)');
+      .dcmSidebar()
+      .elementById('Tab_Contracts_Main_Quotas_Measures_link').click();
+  };  
+
+  // selects Contract Kits - Quotas main frame
+  wd.PromiseChainWebdriver.prototype.dcmContractKitsQuotasPage = function () {
+    var self = this;
+    return this
+      .dcmContractKitsQuotasSubmenu()
+      .dcmContractKitComponentsPage();
   };
 
-  // selects blue button
-  wd.PromiseChainWebdriver.prototype.dcmSelectBlueButton = function () {
+  // selects Contract Kits - Quotas - Measures main frame
+  wd.PromiseChainWebdriver.prototype.dcmContractKitsQuotasMeasuresPage = function () {
+    var self = this;
     return this
-      .elementByCss('.btn.btn-blue:not(.pass)');
+      .dcmContractKitsQuotasMeasuresSubmenu()
+      .dcmContractKitComponentsPage();
   };
 
-  // selects red button
-  wd.PromiseChainWebdriver.prototype.dcmSelectRedButton = function () {
+  // opens New Quota for Contract Kit page
+  wd.PromiseChainWebdriver.prototype.dcmNewContractKitsQuotasPage = function () {
+    var self = this;
     return this
-      .elementByCss('.btn.btn-red:not(.pass)');
+      .dcmContractKitsQuotasPage()
+      .elementById('Button_Contracts_Main_Quotas_NewQuota').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Contracts.ContractsSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
   };
 
-  // selects panel
-  wd.PromiseChainWebdriver.prototype.dcmSelectPanel = function () {
+  // opens New Quota Measure for Contract Kit page
+  wd.PromiseChainWebdriver.prototype.dcmNewContractKitsQuotasMeasurePage = function () {
+    var self = this;
     return this
-      .elementByCss('.panel');
-  };
-
-  // selects table summary
-  wd.PromiseChainWebdriver.prototype.dcmSelectTableSummary = function (childCss) {
-    var selector = childCss ? '.table-heading ' + childCss : '.table-heading';
-    return this
-      .elementByCss(selector);
-  };
-
-  // selects table
-  wd.PromiseChainWebdriver.prototype.dcmSelectTable = function () {
-    return this
-      .elementByCss('table.table');
-  };
-
-  // selects table header
-  wd.PromiseChainWebdriver.prototype.dcmSelectTableHeader = function () {
-    return this
-      .elementByCss('table.table th');
-  };
-
-  // selects table row
-  wd.PromiseChainWebdriver.prototype.dcmSelectTableRow = function () {
-    return this
-      .elementByCss('table.table tbody tr');
-  };
-
-  // selects table cell
-  wd.PromiseChainWebdriver.prototype.dcmSelectTableCell = function () {
-    return this
-      .elementByCss('table.table td');
-  };
-
-  // selects table cell bold text
-  wd.PromiseChainWebdriver.prototype.dcmSelectTableCellBold = function () {
-    return this
-      .elementByCss('table.table td strong');
-  };
-
-  // selects login form
-  wd.PromiseChainWebdriver.prototype.dcmSelectLoginBox = function (childCss) {
-    var selector = childCss ? '.login-model ' + childCss : '.login-model';
-    return this
-      .elementByCss(selector);
-  };
-
-  // selects login form
-  wd.PromiseChainWebdriver.prototype.dcmSelectLoginForm = function (childCss) {
-    var selector = childCss ? 'form[name=LoginForm] ' + childCss : 'form[name=LoginForm]';
-    return this
-      .elementByCss(selector);
+      .dcmContractKitsQuotasMeasuresPage()
+      .elementById('Button_Contracts_Main_Quotas_Measures_NewMeasure').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Contracts.ContractsSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
   };
 
   // creates person party
@@ -922,6 +904,150 @@ module.exports = function (wd) {
 
     return promise
       .elementByCss('a#save').click();
+  };
+
+  // creates person party
+  wd.PromiseChainWebdriver.prototype.dcmCreateContractKitQuota = function (options) {
+    var self = this;
+    var params = {
+      "name": options.name,
+      "description": options.description,
+      "initialMeasure": options.initialMeasure // [allocation.getWeight(),transaction.getQuantity()]
+    };
+
+    var promise = this
+      .dcmNewContractKitsQuotasPage();
+
+    if (params.name) {
+      promise = promise
+        .elementByCss('input[name="Name"]').type(params.name);
+    }
+    if (params.description) {
+      promise = promise
+        .elementByCss('input[name="Description"]').type(params.description); 
+    }
+    if (params.initialMeasure) {
+      promise = promise
+        .elementByCss('button[data-id=MeasureFormulaString]').click().sleep(150)
+        .elementsByCss('button[data-id=MeasureFormulaString] ~ .dropdown-menu li a span.text')
+        .then(function (elements) {
+          var i;
+          var deferred = Q.defer(promise);
+          for (i = 0; i < elements.length; ++i) {
+            (function (idx) {
+              elements[idx].text().then(function (text) {
+                if (text == params.initialMeasure) {
+                  console.log('Quota measure index: ' + idx);
+                  self
+                    .elementByCss('button[data-id=MeasureFormulaString] ~ .dropdown-menu li:nth-child(' + (idx + 1) + ') a')
+                    .click().then(function () {
+                      deferred.resolve();
+                    });
+                }
+              });
+            })(i);
+          }
+          return deferred.promise;
+        });
+    }
+
+    return promise
+      .elementByCss('a#save').click();
+  };
+
+
+  // selects any button
+  wd.PromiseChainWebdriver.prototype.dcmSelectButton = function (containerCss) {
+    var selector = containerCss ? containerCss + ' .btn' : '.btn';
+    return this
+      .elementByCss(selector);
+  };
+
+  // selects disabled button
+  wd.PromiseChainWebdriver.prototype.dcmSelectDisabledButton = function () {
+    return this
+      .elementByCss('.btn.pass');
+  };
+
+  // selects green button
+  wd.PromiseChainWebdriver.prototype.dcmSelectGreenButton = function () {
+    return this
+      .elementByCss('.btn.btn-green:not(.pass)');
+  };
+
+  // selects grey button
+  wd.PromiseChainWebdriver.prototype.dcmSelectGreyButton = function () {
+    return this
+      .elementByCss('.btn.btn-grey:not(.pass)');
+  };
+
+  // selects blue button
+  wd.PromiseChainWebdriver.prototype.dcmSelectBlueButton = function () {
+    return this
+      .elementByCss('.btn.btn-blue:not(.pass)');
+  };
+
+  // selects red button
+  wd.PromiseChainWebdriver.prototype.dcmSelectRedButton = function () {
+    return this
+      .elementByCss('.btn.btn-red:not(.pass)');
+  };
+
+  // selects panel
+  wd.PromiseChainWebdriver.prototype.dcmSelectPanel = function () {
+    return this
+      .elementByCss('.panel');
+  };
+
+  // selects table summary
+  wd.PromiseChainWebdriver.prototype.dcmSelectTableSummary = function (childCss) {
+    var selector = childCss ? '.table-heading ' + childCss : '.table-heading';
+    return this
+      .elementByCss(selector);
+  };
+
+  // selects table
+  wd.PromiseChainWebdriver.prototype.dcmSelectTable = function () {
+    return this
+      .elementByCss('table.table');
+  };
+
+  // selects table header
+  wd.PromiseChainWebdriver.prototype.dcmSelectTableHeader = function () {
+    return this
+      .elementByCss('table.table th');
+  };
+
+  // selects table row
+  wd.PromiseChainWebdriver.prototype.dcmSelectTableRow = function () {
+    return this
+      .elementByCss('table.table tbody tr');
+  };
+
+  // selects table cell
+  wd.PromiseChainWebdriver.prototype.dcmSelectTableCell = function () {
+    return this
+      .elementByCss('table.table td');
+  };
+
+  // selects table cell bold text
+  wd.PromiseChainWebdriver.prototype.dcmSelectTableCellBold = function () {
+    return this
+      .elementByCss('table.table td strong');
+  };
+
+  // selects login form
+  wd.PromiseChainWebdriver.prototype.dcmSelectLoginBox = function (childCss) {
+    var selector = childCss ? '.login-model ' + childCss : '.login-model';
+    return this
+      .elementByCss(selector);
+  };
+
+  // selects login form
+  wd.PromiseChainWebdriver.prototype.dcmSelectLoginForm = function (childCss) {
+    var selector = childCss ? 'form[name=LoginForm] ' + childCss : 'form[name=LoginForm]';
+    return this
+      .elementByCss(selector);
   };
 
   return wd;
