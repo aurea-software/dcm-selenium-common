@@ -573,6 +573,22 @@ module.exports = function (wd) {
       .frame('proppage');
   };
 
+  // opens Delete Quota Measure for Contract Kit page
+  wd.PromiseChainWebdriver.prototype.dcmDeleteContractKitsQuotasMeasurePage = function () {
+    var self = this;
+    return this
+      .dcmContractKitsQuotasMeasuresPage()
+      .elementById('Button_Contracts_Main_Quotas_Measures_DeleteMeasure').click()
+      .frame()
+      .frame('container')
+      .elementByCss('iframe[src="/DMS/servlet/com.trilogy.fs.dms.uicore.DMSCompoundPageServlet?AppName=DMS.DMS&PAGE=Contracts.ContractsSearch"]')
+      .getAttribute('id').then(function (id) {
+        console.log('Frame Id: ' + id);
+        return self.frame(id);
+      })
+      .frame('proppage');
+  };
+
   // creates person party
   wd.PromiseChainWebdriver.prototype.dcmCreatePersonParty = function (options) {
     var params = {
